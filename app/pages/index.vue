@@ -5,10 +5,24 @@
             <h2>Фильтры</h2>
             <div class="filter-group">
                 <label>Квадратура (м²)</label>
+                <div id="slider-area" class="slider"></div>
+                <p>От: {{ store.filters.area.min }} м² До: {{ store.filters.area.max }}</p>
             </div>
-            <div class="filter-group"></div>
-            <div class="filter-group"></div>
-            <div class="filter-group"></div>
+            <div class="filter-group">
+                <label>Этажи</label>
+                <div id="slider-floors" class="slider"></div>
+                <p>От: {{ store.filters.floors.min }} До: {{ store.filters.floors.max }}</p>
+            </div>
+            <div class="filter-group">
+                <label>Цена (₽)</label>
+                <div id="slider-price" class="slider"></div>
+                <p>От: {{ store.filters.price.min.toLocaleString() }} ₽ До: {{ store.filters.price.max.toLocaleString()
+                }} ₽</p>
+            </div>
+            <div class="filter-group">
+                <label>Кол-во комнат</label>
+                <div id="slider-rooms" class="slider"></div>
+            </div>
         </div>
         <div v-for="(block, index) in apartmentBlocks" :key="index" class="apartment-blocks">
             <ApartmentBlock :apartments="block" />
@@ -25,6 +39,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import ApartmentBlock from '~/components/ApartmentBlock.vue'
+import noUiSlider from 'nouislider'
+import 'nouislider/dist/nouislider.css'
 const store = useApartmentsStore()
 
 const apartmentBlocks = computed(() => {
@@ -52,6 +68,58 @@ onMounted(() => {
     window.addEventListener('scroll', () => {
         showScrollTop.value = window.scrollY > 100
     })
+
+    // Слайдер для площади
+    const sliderArea = document.getElementById('slider-area')
+    if (sliderArea) {
+        noUiSlider.create(sliderArea, {
+            start: [store.filters.area.min, store.filters.area.max],
+            range: { min: 0, max: 100 },
+            connect: true
+        }).on('update', (values) => {
+            store.updateFilter('area', { min: Number(values[0]), max: Number(values[1]) })
+        })
+    }
+
+    // Слайдер для этажей
+    const sliderFloors = document.getElementById('slider-floors')
+    if (sliderFloors) {
+        noUiSlider.create(sliderFloors, {
+            start: [store.filters.floors.min, store.filters.floors.max],
+            range: { min: 1, max: 17 },
+            connect: true
+        }).on('update', (values) => {
+            store.updateFilter('floors', { min: Number(values[0]), max: Number(values[1]) })
+        })
+    }
+
+    // Слайдер для цены
+    const sliderPrice = document.getElementById('slider-price')
+    if (sliderPrice) {
+        noUiSlider.create(sliderPrice, {
+            start: [store.filters.price.min, store.filters.price.max],
+            range: { min: 0, max: 10000000 },
+            connect: true
+        }).on('update', (values) => {
+            store.updateFilter('price', { min: Number(values[0]), max: Number(values[1]) })
+        })
+    }
+
+    // Слайдер для комнат
+    const sliderRooms = document.getElementById('slider-rooms')
+    if (sliderRooms) {
+        noUiSlider.create(sliderRooms, {
+            start: [1, 3],
+            range: { min: 1, max: 4 },
+            step: 1,
+            connect: [true, false, true],
+            behaviour: 'drag',
+            tooltips: [true, true]
+        }).on('update', (values) => {
+            const rooms = [Math.floor(Number(values[0])), Math.floor(Number(values[1]))].filter(r => r < 4)
+            store.updateFilter('rooms', rooms)
+        })
+    }
 })
 </script>
 
@@ -65,6 +133,31 @@ onMounted(() => {
 .title {
     font-size: 2em;
     margin-bottom: 20px;
+}
+
+.filters {
+    margin-bottom: 20px;
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    .filter-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .slider {
+        margin-bottom: 10px;
+    }
+
+    p {
+        margin: 0;
+    }
 }
 
 .load-more,
