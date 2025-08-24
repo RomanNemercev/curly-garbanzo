@@ -1,0 +1,250 @@
+[
+  {
+    "id": "104",
+    "layout": "3-комнатная",
+    "area": 63.1,
+    "floors": "1 из 17",
+    "price": 6630500,
+    "image": "layout-104.png"
+  },
+  {
+    "id": "105",
+    "layout": "3-комнатная",
+    "area": 63.2,
+    "floors": "2 из 17",
+    "price": 6650759,
+    "image": "layout-105.png"
+  },
+  {
+    "id": "106",
+    "layout": "3-комнатная",
+    "area": 63.2,
+    "floors": "3 из 17",
+    "price": 6650759,
+    "image": "layout-106.png"
+  },
+  {
+    "id": "107",
+    "layout": "3-комнатная",
+    "area": 63.6,
+    "floors": "4 из 17",
+    "price": 6671314,
+    "image": "layout-107.png"
+  },
+  {
+    "id": "108",
+    "layout": "3-комнатная",
+    "area": 63.1,
+    "floors": "5 из 17",
+    "price": 679554,
+    "image": "layout-108.png"
+  },
+  {
+    "id": "109",
+    "layout": "1-комнатная",
+    "area": 38.5,
+    "floors": "1 из 17",
+    "price": 4050000,
+    "image": "layout-109.png"
+  },
+  {
+    "id": "110",
+    "layout": "1-комнатная",
+    "area": 39.0,
+    "floors": "3 из 17",
+    "price": 4100000,
+    "image": "layout-110.png"
+  },
+  {
+    "id": "111",
+    "layout": "1-комнатная",
+    "area": 37.8,
+    "floors": "5 из 17",
+    "price": 3980000,
+    "image": "layout-111.png"
+  },
+  {
+    "id": "112",
+    "layout": "1-комнатная",
+    "area": 40.1,
+    "floors": "7 из 17",
+    "price": 4210000,
+    "image": "layout-112.png"
+  },
+  {
+    "id": "113",
+    "layout": "1-комнатная",
+    "area": 39.5,
+    "floors": "9 из 17",
+    "price": 4150000,
+    "image": "layout-113.png"
+  },
+  {
+    "id": "114",
+    "layout": "1-комнатная",
+    "area": 38.0,
+    "floors": "11 из 17",
+    "price": 3990000,
+    "image": "layout-114.png"
+  },
+  {
+    "id": "115",
+    "layout": "1-комнатная",
+    "area": 41.0,
+    "floors": "13 из 17",
+    "price": 4300000,
+    "image": "layout-115.png"
+  },
+  {
+    "id": "116",
+    "layout": "1-комнатная",
+    "area": 39.2,
+    "floors": "15 из 17",
+    "price": 4120000,
+    "image": "layout-116.png"
+  },
+  {
+    "id": "117",
+    "layout": "1-комнатная",
+    "area": 37.5,
+    "floors": "17 из 17",
+    "price": 3950000,
+    "image": "layout-117.png"
+  },
+  {
+    "id": "118",
+    "layout": "2-комнатная",
+    "area": 50.5,
+    "floors": "1 из 17",
+    "price": 5300000,
+    "image": "layout-118.png"
+  },
+  {
+    "id": "119",
+    "layout": "2-комнатная",
+    "area": 51.2,
+    "floors": "2 из 17",
+    "price": 5380000,
+    "image": "layout-119.png"
+  },
+  {
+    "id": "120",
+    "layout": "2-комнатная",
+    "area": 50.0,
+    "floors": "3 из 17",
+    "price": 5250000,
+    "image": "layout-120.png"
+  },
+  {
+    "id": "121",
+    "layout": "2-комнатная",
+    "area": 52.0,
+    "floors": "4 из 17",
+    "price": 5460000,
+    "image": "layout-121.png"
+  },
+  {
+    "id": "122",
+    "layout": "2-комнатная",
+    "area": 51.5,
+    "floors": "5 из 17",
+    "price": 5400000,
+    "image": "layout-122.png"
+  },
+  {
+    "id": "123",
+    "layout": "2-комнатная",
+    "area": 50.8,
+    "floors": "6 из 17",
+    "price": 5340000,
+    "image": "layout-123.png"
+  },
+  {
+    "id": "124",
+    "layout": "2-комнатная",
+    "area": 52.5,
+    "floors": "7 из 17",
+    "price": 5510000,
+    "image": "layout-124.png"
+  },
+  {
+    "id": "125",
+    "layout": "2-комнатная",
+    "area": 51.8,
+    "floors": "8 из 17",
+    "price": 5440000,
+    "image": "layout-125.png"
+  },
+  {
+    "id": "126",
+    "layout": "2-комнатная",
+    "area": 53.0,
+    "floors": "9 из 17",
+    "price": 5560000,
+    "image": "layout-126.png"
+  },
+  {
+    "id": "127",
+    "layout": "2-комнатная",
+    "area": 52.2,
+    "floors": "10 из 17",
+    "price": 5480000,
+    "image": "layout-127.png"
+  },
+  {
+    "id": "128",
+    "layout": "2-комнатная",
+    "area": 50.2,
+    "floors": "11 из 17",
+    "price": 5270000,
+    "image": "layout-128.png"
+  },
+  {
+    "id": "129",
+    "layout": "2-комнатная",
+    "area": 51.0,
+    "floors": "12 из 17",
+    "price": 5350000,
+    "image": "layout-129.png"
+  },
+  {
+    "id": "130",
+    "layout": "2-комнатная",
+    "area": 52.8,
+    "floors": "13 из 17",
+    "price": 5540000,
+    "image": "layout-130.png"
+  },
+  {
+    "id": "131",
+    "layout": "2-комнатная",
+    "area": 51.4,
+    "floors": "14 из 17",
+    "price": 5400000,
+    "image": "layout-131.png"
+  },
+  {
+    "id": "132",
+    "layout": "2-комнатная",
+    "area": 53.5,
+    "floors": "15 из 17",
+    "price": 5610000,
+    "image": "layout-132.png"
+  },
+  {
+    "id": "133",
+    "layout": "2-комнатная",
+    "area": 52.1,
+    "floors": "16 из 17",
+    "price": 5470000,
+    "image": "layout-133.png"
+  },
+  {
+    "id": "134",
+    "layout": "2-комнатная",
+    "area": 54.0,
+    "floors": "17 из 17",
+    "price": 5670000,
+    "image": "layout-134.png"
+  }
+]
