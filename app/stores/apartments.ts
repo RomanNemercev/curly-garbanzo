@@ -12,17 +12,21 @@ interface Apartment {
 
 export const useApartmentsStore = defineStore('apartments', () => {
     const apartments = ref<Apartment[]>([])
+    const fullFiltered = ref<Apartment[]>([]) // Новый: полный отфильтрованный массив без пагинации
     const filteredApartments = ref<Apartment[]>([])
     const currentPage = ref(1)
     const perPage = 5
     const loading = ref(false)
 
     const filters = ref({
-        area: { min: 0, max: 100 },
+        area: { min: 0, max: 200 }, // Расширил max, чтобы протестировать (верни 100, если нужно)
         floors: { min: 1, max: 17 },
-        price: { min: 0, max: 10000000 },
-        rooms: [1, 2, 3]
+        price: { min: 0, max: 20000000 }, // Расширил, чтобы захватить все цены
+        rooms: [1, 2, 3, 4] // Добавил 4 disabled, но для теста
     })
+
+    const sortKey = ref('')
+    const sortOrder = ref('asc')
 
     async function fetchApartments() {
         loading.value = true
@@ -35,60 +39,47 @@ export const useApartmentsStore = defineStore('apartments', () => {
     }
 
     function filterApartments() {
-        filteredApartments.value = apartments.value
-            .filter(apartment => {
-                // Проверка floors
-                const floorsStr = apartment.floors ?? ''
-                const floorsNumStr = (floorsStr.split(' ')[0] ?? '')
-                const floorsNum = floorsNumStr !== '' ? parseInt(floorsNumStr) : NaN
-
-                // Проверка layout
-                const layoutStr = apartment.layout ?? ''
-                const layoutNumStr = (layoutStr.split(' ')[0] ?? '')
-                const layoutNum = layoutNumStr !== '' ? parseInt(layoutNumStr) : NaN
-
-                return (
-                    apartment.area >= filters.value.area.min &&
-                    apartment.area <= filters.value.area.max &&
-                    !isNaN(floorsNum) &&
-                    floorsNum >= filters.value.floors.min &&
-                    floorsNum <= filters.value.floors.max &&
-                    apartment.price >= filters.value.price.min &&
-                    apartment.price <= filters.value.price.max &&
-                    !isNaN(layoutNum) &&
-                    filters.value.rooms.includes(layoutNum)
-                )
+        let sorted = [...apartments.value]
+        if (sortKey.value) {
+            sorted.sort((a, b) => {
+                let valueA, valueB
+                if (sortKey.value === 'area') {
+                    valueA = a.area
+                    valueB = b.area
+                } else if (sortKey.value === 'floors') {
+                    const floorsStrA = a.floors ?? ''
+                    const floorsNumStrA = (floorsStrA.split(' ')[0] ?? '')
+                    valueA = parseInt(floorsNumStrA)
+                    const floorStrB = b.floors ?? ''
+                    const floorsNumStrB = (floorStrB.split(' ')[0] ?? '')
+                    valueB = parseInt(floorsNumStrB)
+                } else if (sortKey.value === 'price') {
+                    valueA = a.price
+                    valueB = b.price
+                }
+                return sortOrder.value === 'asc' ? (valueA ?? 0) - (valueB ?? 0) : (valueB ?? 0) - (valueA ?? 0)
             })
-            .slice(0, perPage)
+        }
+
+        fullFiltered.value = sorted.filter(apartment =>
+            apartment.area >= filters.value.area.min && apartment.area <= filters.value.area.max &&
+            parseInt((apartment.floors ?? '').split(' ')[0] ?? '') >= filters.value.floors.min &&
+            parseInt((apartment.floors ?? '').split(' ')[0] ?? '') <= filters.value.floors.max &&
+            apartment.price >= filters.value.price.min && apartment.price <= filters.value.price.max &&
+            filters.value.rooms.includes(parseInt((apartment.layout ?? '').split('-')[0] ?? ''))
+        )
+
+        console.log('Full filtered length:', fullFiltered.value.length)
+        console.log('Excluded apts:', apartments.value.filter(apt => !fullFiltered.value.includes(apt)).map(apt => apt.id))
+
+        filteredApartments.value = fullFiltered.value.slice(0, perPage)
         currentPage.value = 1
     }
 
     function loadMore() {
-        const nextEnd = (currentPage.value + 1) * perPage
-        filteredApartments.value = apartments.value
-            .filter(apartment => {
-                const floorsStr = apartment.floors ?? ''
-                const floorsNumStr = (floorsStr.split(' ')[0] ?? '')
-                const floorsNum = floorsNumStr !== '' ? parseInt(floorsNumStr) : NaN
-
-                const layoutStr = apartment.layout ?? ''
-                const layoutNumStr = (layoutStr.split(' ')[0] ?? '')
-                const layoutNum = layoutNumStr !== '' ? parseInt(layoutNumStr) : NaN
-
-                return (
-                    apartment.area >= filters.value.area.min &&
-                    apartment.area <= filters.value.area.max &&
-                    !isNaN(floorsNum) &&
-                    floorsNum >= filters.value.floors.min &&
-                    floorsNum <= filters.value.floors.max &&
-                    apartment.price >= filters.value.price.min &&
-                    apartment.price <= filters.value.price.max &&
-                    !isNaN(layoutNum) &&
-                    filters.value.rooms.includes(layoutNum)
-                )
-            })
-            .slice(0, nextEnd)
         currentPage.value++
+        const nextEnd = currentPage.value * perPage
+        filteredApartments.value = fullFiltered.value.slice(0, nextEnd)
     }
 
     type FilterType = 'area' | 'floors' | 'price' | 'rooms'
@@ -104,5 +95,17 @@ export const useApartmentsStore = defineStore('apartments', () => {
         loading.value = false
     }
 
-    return { apartments, filteredApartments, currentPage, perPage, loading, fetchApartments, filterApartments, loadMore, filters, updateFilter }
+    function sortBy(key: string) {
+        loading.value = true
+        if (sortKey.value === key) {
+            sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+        } else {
+            sortKey.value = key
+            sortOrder.value = 'asc'
+        }
+        filterApartments()
+        loading.value = false
+    }
+
+    return { apartments, fullFiltered, filteredApartments, currentPage, perPage, loading, fetchApartments, filterApartments, loadMore, filters, updateFilter, sortKey, sortOrder, sortBy }
 })

@@ -1,10 +1,9 @@
 <template>
-    <div class="apartment-block">
-        <ApartmentCard v-for="apartment in apartments" :key="apartment.id" :apartment="apartment" />
-    </div>
+    <ApartmentCard :apartments="apartments" />
 </template>
 
 <script setup lang="ts">
+import ApartmentCard from './ApartmentCard.vue'
 defineProps<{
     apartments: {
         id: string
@@ -16,16 +15,3 @@ defineProps<{
     }[]
 }>()
 </script>
-
-<style scoped lang="scss">
-.apartment-block {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-
-    @media (max-width: 960px) {
-        grid-template-columns: 1fr;
-    }
-}
-</style>

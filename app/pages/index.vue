@@ -6,7 +6,7 @@
             <div class="filter-group">
                 <label>Квадратура (м²)</label>
                 <div id="slider-area" class="slider"></div>
-                <p>От: {{ store.filters.area.min }} м² До: {{ store.filters.area.max }}</p>
+                <p>От: {{ store.filters.area.min }} м² До: {{ store.filters.area.max }} м²</p>
             </div>
             <div class="filter-group">
                 <label>Этажи</label>
@@ -17,22 +17,42 @@
                 <label>Цена (₽)</label>
                 <div id="slider-price" class="slider"></div>
                 <p>От: {{ store.filters.price.min.toLocaleString() }} ₽ До: {{ store.filters.price.max.toLocaleString()
-                }} ₽</p>
+                    }} ₽</p>
             </div>
             <div class="filter-group">
                 <label>Кол-во комнат</label>
                 <div id="slider-rooms" class="slider"></div>
             </div>
         </div>
-        <div v-for="(block, index) in apartmentBlocks" :key="index" class="apartment-blocks">
-            <ApartmentBlock :apartments="block" />
-        </div>
+        <table class="apartment-table">
+            <thead>
+                <tr>
+                    <th class="apartment-table__header">Планировка</th>
+                    <th class="apartment-table__header">Квартира</th>
+                    <th class="apartment-table__header" @click="store.sortBy('area')">S, м² <span
+                          v-if="store.sortKey === 'area'">{{ store.sortOrder === 'asc' ? '↑' : '↓' }}</span></th>
+                    <th class="apartment-table__header" @click="store.sortBy('floors')">Этаж <span
+                          v-if="store.sortKey === 'floors'">{{ store.sortOrder === 'asc' ? '↑' : '↓' }}</span></th>
+                    <th class="apartment-table__header" @click="store.sortBy('price')">Цена <span
+                          v-if="store.sortKey === 'price'">{{ store.sortOrder === 'asc' ? '↑' : '↓' }}</span></th>
+                </tr>
+            </thead>
+            <tbody v-if="store.filteredApartments.length > 0">
+                <template v-for="(block, index) in apartmentBlocks" :key="index">
+                    <ApartmentBlock :apartments="block" />
+                </template>
+            </tbody>
+            <tbody v-else>
+                <tr>
+                    <td colspan="5" class="no-results">Нет квартир по выбранным фильтрам</td>
+                </tr>
+            </tbody>
+        </table>
         <button v-if="hasMore" @click="loadMore" :disabled="loading" class="load-more">
             Загрузить ещё
         </button>
         <button v-if="showScrollTop" @click="scrollToTop" :class="{ 'show': showScrollTop }"
           class="scroll-top">Наверх</button>
-        <!-- <button @click="store.fetchApartments">Получить данные</button> -->
     </div>
 </template>
 
@@ -48,10 +68,12 @@ const apartmentBlocks = computed(() => {
     for (let i = 0; i < store.filteredApartments.length; i += 5) {
         blocks.push(store.filteredApartments.slice(i, i + 5))
     }
+    console.log(blocks);
+
     return blocks
 })
 
-const hasMore = computed(() => store.filteredApartments.length < store.apartments.length)
+const hasMore = computed(() => store.filteredApartments.length < store.fullFiltered.length)
 const loading = computed(() => store.loading)
 const showScrollTop = ref(false)
 
@@ -87,6 +109,7 @@ onMounted(() => {
         noUiSlider.create(sliderFloors, {
             start: [store.filters.floors.min, store.filters.floors.max],
             range: { min: 1, max: 17 },
+            step: 1,
             connect: true
         }).on('update', (values) => {
             store.updateFilter('floors', { min: Number(values[0]), max: Number(values[1]) })
@@ -116,7 +139,12 @@ onMounted(() => {
             behaviour: 'drag',
             tooltips: [true, true]
         }).on('update', (values) => {
-            const rooms = [Math.floor(Number(values[0])), Math.floor(Number(values[1]))].filter(r => r < 4)
+            const minRoom = Math.floor(Number(values[0]))
+            const maxRoom = Math.floor(Number(values[1]))
+            const rooms = []
+            for (let r = minRoom; r <= maxRoom; r++) {
+                if (r < 4) rooms.push(r)
+            }
             store.updateFilter('rooms', rooms)
         })
     }
@@ -174,6 +202,27 @@ onMounted(() => {
     &:hover:not(:disabled) {
         background-color: #f0f0f0;
     }
+}
+
+.apartment-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    &__header {
+        padding: 10px;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+    }
+}
+
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #999;
 }
 
 .scroll-top {
