@@ -1,12 +1,13 @@
 <template>
-    <tr class="apartment-card" v-for="apartment in apartments" :key="apartment.id">
-        <td class="apartment-card__cell"><img :src="`/images/${apartment.image}`" alt="Layout"
-              class="apartment-card__image"></td>
-        <td class="apartment-card__cell">{{ apartment.layout }}</td>
-        <td class="apartment-card__cell">{{ apartment.area }}</td>
-        <td class="apartment-card__cell">{{ apartment.floors }}</td>
-        <td class="apartment-card__cell">{{ apartment.price.toLocaleString() }} ₽</td>
-    </tr>
+    <div class="apartment-block" role="listitem" v-for="apartment in apartments" :key="apartment.id">
+        <div class="apartment-block__item">
+            <img :src="`/images/${apartment.image}`" loading="lazy" alt="Layout" class="apartment-block__image">
+        </div>
+        <div class="apartment-block__item">{{ apartment.layout }}</div>
+        <div class="apartment-block__item">{{ apartment.area }}</div>
+        <div class="apartment-block__item">{{ apartment.floors }}</div>
+        <div class="apartment-block__item">{{ apartment.price.toLocaleString() }}</div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -23,15 +24,43 @@ defineProps<{
 </script>
 
 <style scoped lang="scss">
-.apartment-card {
-    &__cell {
-        padding: 10px;
-        border-bottom: 1px solid #e0e0e0;
+.apartment-block {
+    display: grid;
+    grid-template-columns: 9.9877fr 35.083fr 14.983fr 14.983fr 14.983fr;
+    column-gap: 20px;
+    max-width: 100%;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+
+    &__item:first-child {
+        padding: 26.4px 7px;
     }
 
-    &__image {
-        width: 100px;
-        height: auto;
+    &__item:nth-child(2) {
+        font-size: 1.6rem;
+        font-weight: 500;
+        padding-top: 19px;
+    }
+
+    &__item:nth-child(3) {
+        font-size: 1.6rem;
+        font-weight: 400;
+        padding-top: 18px;
+    }
+
+    &__item:nth-child(4) {
+        font-size: 1.6rem;
+        color: rgba(11, 23, 57, 0.5);
+        padding-top: 18px;
+    }
+
+    &__item:nth-child(4)::first-letter {
+        color: var(--color_zodiac);
+    }
+
+    &__item:last-child {
+        font-size: 1.6rem;
+        font-weight: 400;
+        padding-top: 18px;
     }
 }
 </style>
