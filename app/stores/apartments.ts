@@ -12,18 +12,19 @@ interface Apartment {
 
 export const useApartmentsStore = defineStore('apartments', () => {
     const apartments = ref<Apartment[]>([])
-    const fullFiltered = ref<Apartment[]>([]) // Новый: полный отфильтрованный массив без пагинации
+    const fullFiltered = ref<Apartment[]>([])
     const filteredApartments = ref<Apartment[]>([])
     const currentPage = ref(1)
     const perPage = 5
     const loading = ref(false)
 
-    const filters = ref({
-        area: { min: 0, max: 200 }, // Расширил max, чтобы протестировать (верни 100, если нужно)
-        floors: { min: 1, max: 17 },
-        price: { min: 0, max: 20000000 }, // Расширил, чтобы захватить все цены
-        rooms: [1, 2, 3, 4] // Добавил 4 disabled, но для теста
-    })
+    // start floors clear
+    const defaultFilters = {
+        area: { min: 0, max: 100 },
+        price: { min: 0, max: 10_000_000 },
+        rooms: [1, 2, 3]
+    }
+    const filters = ref({ ...defaultFilters })
 
     const sortKey = ref('')
     const sortOrder = ref('asc')
@@ -46,13 +47,6 @@ export const useApartmentsStore = defineStore('apartments', () => {
                 if (sortKey.value === 'area') {
                     valueA = a.area
                     valueB = b.area
-                } else if (sortKey.value === 'floors') {
-                    const floorsStrA = a.floors ?? ''
-                    const floorsNumStrA = (floorsStrA.split(' ')[0] ?? '')
-                    valueA = parseInt(floorsNumStrA)
-                    const floorStrB = b.floors ?? ''
-                    const floorsNumStrB = (floorStrB.split(' ')[0] ?? '')
-                    valueB = parseInt(floorsNumStrB)
                 } else if (sortKey.value === 'price') {
                     valueA = a.price
                     valueB = b.price
@@ -63,8 +57,6 @@ export const useApartmentsStore = defineStore('apartments', () => {
 
         fullFiltered.value = sorted.filter(apartment =>
             apartment.area >= filters.value.area.min && apartment.area <= filters.value.area.max &&
-            parseInt((apartment.floors ?? '').split(' ')[0] ?? '') >= filters.value.floors.min &&
-            parseInt((apartment.floors ?? '').split(' ')[0] ?? '') <= filters.value.floors.max &&
             apartment.price >= filters.value.price.min && apartment.price <= filters.value.price.max &&
             filters.value.rooms.includes(parseInt((apartment.layout ?? '').split('-')[0] ?? ''))
         )
@@ -82,7 +74,7 @@ export const useApartmentsStore = defineStore('apartments', () => {
         filteredApartments.value = fullFiltered.value.slice(0, nextEnd)
     }
 
-    type FilterType = 'area' | 'floors' | 'price' | 'rooms'
+    type FilterType = 'area' | 'price' | 'rooms'
 
     function updateFilter(type: FilterType, value: { min: number; max: number } | number[]) {
         loading.value = true
@@ -94,6 +86,12 @@ export const useApartmentsStore = defineStore('apartments', () => {
         filterApartments()
         loading.value = false
     }
+
+    function resetFilters() {
+        filters.value = { ...defaultFilters }
+        filterApartments()
+    }
+
 
     function sortBy(key: string) {
         loading.value = true
@@ -107,5 +105,5 @@ export const useApartmentsStore = defineStore('apartments', () => {
         loading.value = false
     }
 
-    return { apartments, fullFiltered, filteredApartments, currentPage, perPage, loading, fetchApartments, filterApartments, loadMore, filters, updateFilter, sortKey, sortOrder, sortBy }
+    return { apartments, fullFiltered, filteredApartments, currentPage, perPage, loading, fetchApartments, filterApartments, loadMore, filters, updateFilter, resetFilters, sortKey, sortOrder, sortBy }
 })

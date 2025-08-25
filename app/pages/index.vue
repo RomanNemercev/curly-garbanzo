@@ -4,25 +4,30 @@
         <div class="filters">
             <h2>Фильтры</h2>
             <div class="filter-group">
-                <label>Квадратура (м²)</label>
-                <div id="slider-area" class="slider"></div>
-                <p>От: {{ store.filters.area.min }} м² До: {{ store.filters.area.max }} м²</p>
-            </div>
-            <div class="filter-group">
-                <label>Этажи</label>
-                <div id="slider-floors" class="slider"></div>
-                <p>От: {{ store.filters.floors.min }} До: {{ store.filters.floors.max }}</p>
+                <label>Кол-во комнат</label>
+                <div class="rooms-buttons">
+                    <button class="room-button" :class="{ active: store.filters.rooms.includes(1) }"
+                      @click="toggleRoom(1)">1к</button>
+                    <button class="room-button" :class="{ active: store.filters.rooms.includes(2) }"
+                      @click="toggleRoom(2)">2к</button>
+                    <button class="room-button" :class="{ active: store.filters.rooms.includes(3) }"
+                      @click="toggleRoom(3)">3к</button>
+                    <button class="room-button disabled" disabled>4к</button>
+                </div>
             </div>
             <div class="filter-group">
                 <label>Цена (₽)</label>
                 <div id="slider-price" class="slider"></div>
-                <p>От: {{ store.filters.price.min.toLocaleString() }} ₽ До: {{ store.filters.price.max.toLocaleString()
+                <p>От: {{ store.filters.price.min.toLocaleString() }} ₽ До: {{
+                    store.filters.price.max.toLocaleString()
                     }} ₽</p>
             </div>
             <div class="filter-group">
-                <label>Кол-во комнат</label>
-                <div id="slider-rooms" class="slider"></div>
+                <label>Площадь, м²</label>
+                <div id="slider-area" class="slider"></div>
+                <p>От: {{ store.filters.area.min }} До: {{ store.filters.area.max }}</p>
             </div>
+            <button @click="store.resetFilters" class="reset-button">Сбросить параметры</button>
         </div>
         <table class="apartment-table">
             <thead>
@@ -85,6 +90,15 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+function toggleRoom(room: number) {
+    const rooms = store.filters.rooms
+    if (rooms.includes(room)) {
+        store.updateFilter('rooms', rooms.filter(r => r !== room))
+    } else {
+        store.updateFilter('rooms', [...rooms, room])
+    }
+}
+
 onMounted(() => {
     if (!store.apartments.length) store.fetchApartments()
     window.addEventListener('scroll', () => {
@@ -103,49 +117,15 @@ onMounted(() => {
         })
     }
 
-    // Слайдер для этажей
-    const sliderFloors = document.getElementById('slider-floors')
-    if (sliderFloors) {
-        noUiSlider.create(sliderFloors, {
-            start: [store.filters.floors.min, store.filters.floors.max],
-            range: { min: 1, max: 17 },
-            step: 1,
-            connect: true
-        }).on('update', (values) => {
-            store.updateFilter('floors', { min: Number(values[0]), max: Number(values[1]) })
-        })
-    }
-
     // Слайдер для цены
     const sliderPrice = document.getElementById('slider-price')
     if (sliderPrice) {
         noUiSlider.create(sliderPrice, {
             start: [store.filters.price.min, store.filters.price.max],
-            range: { min: 0, max: 10000000 },
+            range: { min: 0, max: 10_000_000 },
             connect: true
         }).on('update', (values) => {
             store.updateFilter('price', { min: Number(values[0]), max: Number(values[1]) })
-        })
-    }
-
-    // Слайдер для комнат
-    const sliderRooms = document.getElementById('slider-rooms')
-    if (sliderRooms) {
-        noUiSlider.create(sliderRooms, {
-            start: [1, 3],
-            range: { min: 1, max: 4 },
-            step: 1,
-            connect: [true, false, true],
-            behaviour: 'drag',
-            tooltips: [true, true]
-        }).on('update', (values) => {
-            const minRoom = Math.floor(Number(values[0]))
-            const maxRoom = Math.floor(Number(values[1]))
-            const rooms = []
-            for (let r = minRoom; r <= maxRoom; r++) {
-                if (r < 4) rooms.push(r)
-            }
-            store.updateFilter('rooms', rooms)
         })
     }
 })
@@ -185,6 +165,39 @@ onMounted(() => {
 
     p {
         margin: 0;
+    }
+
+    .rooms-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .room-button {
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        cursor: pointer;
+
+        &.active {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    .reset-button {
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
     }
 }
 
