@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useNuxtApp } from '#app'
 
 interface Apartment {
     id: string
@@ -28,6 +29,18 @@ export const useApartmentsStore = defineStore('apartments', () => {
 
     const sortKey = ref('')
     const sortOrder = ref('asc')
+
+    if (import.meta.server) {
+        const persistedState = useState('apartments-persisted-state', () => ({
+            filters: defaultFilters,
+            sortKey: '',
+            sortOrder: 'asc'
+        }))
+        filters.value = persistedState.value.filters
+        sortKey.value = persistedState.value.sortKey
+        sortOrder.value = persistedState.value.sortOrder
+    }
+
 
     async function fetchApartments() {
         loading.value = true
@@ -61,7 +74,7 @@ export const useApartmentsStore = defineStore('apartments', () => {
             filters.value.rooms.includes(parseInt((apartment.layout ?? '').split('-')[0] ?? ''))
         )
 
-        console.log('Full filtered length:', fullFiltered.value.length)
+        console.log('Full filtered length:', fullFiltered.value.length, 'Filters:', filters.value)
         console.log('Excluded apts:', apartments.value.filter(apt => !fullFiltered.value.includes(apt)).map(apt => apt.id))
 
         filteredApartments.value = fullFiltered.value.slice(0, perPage)
@@ -72,6 +85,7 @@ export const useApartmentsStore = defineStore('apartments', () => {
         currentPage.value++
         const nextEnd = currentPage.value * perPage
         filteredApartments.value = fullFiltered.value.slice(0, nextEnd)
+        console.log('Loaded more, current length:', filteredApartments.value.length)
     }
 
     type FilterType = 'area' | 'price' | 'rooms'
@@ -85,11 +99,13 @@ export const useApartmentsStore = defineStore('apartments', () => {
         }
         filterApartments()
         loading.value = false
+        console.log('Filter updated:', type, value)
     }
 
     function resetFilters() {
         filters.value = { ...defaultFilters }
         filterApartments()
+        console.log('Filters reset to default')
     }
 
 
@@ -103,7 +119,13 @@ export const useApartmentsStore = defineStore('apartments', () => {
         }
         filterApartments()
         loading.value = false
+        console.log('Sort updated:', key, sortOrder.value)
     }
 
     return { apartments, fullFiltered, filteredApartments, currentPage, perPage, loading, fetchApartments, filterApartments, loadMore, filters, updateFilter, resetFilters, sortKey, sortOrder, sortBy }
+}, {
+    persist: {
+        storage: import.meta.client ? localStorage : undefined,
+        paths: ['filters', 'sortKey', 'sortOrder']
+    }
 })

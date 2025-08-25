@@ -20,7 +20,7 @@
                 <div id="slider-price" class="slider"></div>
                 <p>От: {{ store.filters.price.min.toLocaleString() }} ₽ До: {{
                     store.filters.price.max.toLocaleString()
-                    }} ₽</p>
+                }} ₽</p>
             </div>
             <div class="filter-group">
                 <label>Площадь, м²</label>
@@ -62,7 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
+import { useApartmentsStore } from '~/stores/apartments'
 import ApartmentBlock from '~/components/ApartmentBlock.vue'
 import noUiSlider from 'nouislider'
 import 'nouislider/dist/nouislider.css'
@@ -93,7 +94,7 @@ function scrollToTop() {
 function toggleRoom(room: number) {
     const rooms = store.filters.rooms
     if (rooms.includes(room)) {
-        store.updateFilter('rooms', rooms.filter(r => r !== room))
+        store.updateFilter('rooms', rooms.filter((r: number) => r !== room))
     } else {
         store.updateFilter('rooms', [...rooms, room])
     }
@@ -129,6 +130,10 @@ onMounted(() => {
         })
     }
 })
+
+watch(() => store.filters.rooms, (newRooms) => {
+    console.log('Rooms updated on client:', newRooms)
+}, { immediate: true })
 </script>
 
 <style scoped lang="scss">
