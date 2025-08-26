@@ -123,6 +123,7 @@ defineProps<{
             font-weight: 500;
             padding-top: 0;
             margin-top: -5px;
+            padding-left: 6px;
 
             .apartment-block__f {
                 display: inline-block;
@@ -134,7 +135,7 @@ defineProps<{
             font-size: 14px;
             font-weight: 500;
             margin-top: -5px;
-            margin-left: -23px;
+            margin-left: -17px;
 
             .apartment-block__r {
                 display: inline-block;

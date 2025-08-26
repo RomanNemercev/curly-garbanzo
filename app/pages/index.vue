@@ -108,7 +108,7 @@
                             store.filters.price.min.toLocaleString() }}</span><span
                           class="apartments-page__to-title">до</span> <span class="apartments-page__to-item">{{
                             store.filters.price.max.toLocaleString()
-                            }}</span></p>
+                        }}</span></p>
                     <div aria-label="Фильтр - Установить цену" id="slider-price" class="apartments-page__filter-slider">
                     </div>
                 </div>
@@ -320,9 +320,18 @@ onMounted(() => {
                         color: var(--color_zodiac);
                         padding: 5px 0;
                         font-weight: 400;
+                        width: fit-content;
 
                         &:hover {
-                            background-color: #e0e0e0;
+                            text-decoration: underline;
+                        }
+                    }
+
+                    .apartments-page__apartment-list-header-item:nth-child(-n+2) {
+                        cursor: default;
+
+                        &:hover {
+                            text-decoration: none;
                         }
                     }
 
