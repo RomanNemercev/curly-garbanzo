@@ -11,9 +11,25 @@
                     <div class="apartments-page__apartment-list-header" role="row">
                         <div class="apartments-page__apartment-list-header-item" role="columnheader">Планировка</div>
                         <div class="apartments-page__apartment-list-header-item" role="columnheader">Квартира</div>
-                        <div class="apartments-page__apartment-list-header-item" role="columnheader"
+                        <div class="apartments-page__apartment-list-header-item apartments-area" role="columnheader"
                           @click="store.sortBy('area')">S, м²
-                            <span v-if="store.sortKey === 'area'">{{ store.sortOrder === 'asc' ? '↑' : '↓' }}</span>
+                            <div class="apartments-page__apartment-list-svg"
+                              :class="store.sortOrder === 'asc' ? 'active' : 'non-active'">
+                                <svg width="7" height="10" viewBox="0 0 7 10" fill="none"
+                                  xmlns="http://www.w3.org/2000/svg">
+                                    <g opacity="0.4">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                          d="M2.82335 9.7465C2.98561 9.91016 3.19987 10 3.42956 10C3.65867 10 3.87408 9.91016 4.0352 9.7465L6.69029 6.98723C6.9137 6.7612 6.9137 6.39555 6.69029 6.16952C6.46747 5.94349 6.1058 5.94349 5.8824 6.16952L3.42956 8.72451L0.976151 6.16952C0.752751 5.94349 0.391653 5.94349 0.168252 6.16952C-0.0551483 6.39555 -0.0551483 6.7612 0.168252 6.98723L2.82335 9.7465Z"
+                                          fill="#FF0000" />
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                          d="M2.82335 9.7465C2.98561 9.91016 3.19987 10 3.42956 10C3.65867 10 3.87408 9.91016 4.0352 9.7465L6.69029 6.98723C6.9137 6.7612 6.9137 6.39555 6.69029 6.16952C6.46747 5.94349 6.1058 5.94349 5.8824 6.16952L3.42956 8.72451L0.976151 6.16952C0.752751 5.94349 0.391653 5.94349 0.168252 6.16952C-0.0551483 6.39555 -0.0551483 6.7612 0.168252 6.98723L2.82335 9.7465Z"
+                                          fill="#0B1739" />
+                                    </g>
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M4.0345 0.253496C3.87223 0.0898395 3.65798 2.7968e-07 3.42829 2.9976e-07C3.19918 3.1979e-07 2.98377 0.0898396 2.82265 0.253496L0.167554 3.01277C-0.0558463 3.2388 -0.0558462 3.60445 0.167554 3.83048C0.390384 4.05651 0.752053 4.05651 0.975454 3.83048L3.42829 1.27549L5.8817 3.83048C6.1051 4.05651 6.4662 4.05651 6.6896 3.83048C6.913 3.60445 6.913 3.2388 6.6896 3.01277L4.0345 0.253496Z"
+                                      fill="#3EB57C" />
+                                </svg>
+                            </div>
                         </div>
                         <div class="apartments-page__apartment-list-header-item apartments-floor" role="columnheader"
                           @click="store.sortBy('floors')">
@@ -276,6 +292,12 @@ onMounted(() => {
                 margin-bottom: 30px;
             }
 
+            @media (max-width: 960px) {
+                .apartments-page__main-title {
+                    margin-bottom: 14px;
+                }
+            }
+
             .apartments-page__apartment-list {
                 width: 100%;
                 border-radius: 4px;
@@ -304,8 +326,15 @@ onMounted(() => {
                         }
                     }
 
+                    @media (max-width: 960px) {
+                        .apartments-page__apartment-list-header-item:nth-child(-n+2) {
+                            display: none;
+                        }
+                    }
+
                     .apartments-floor,
-                    .apartments-rub {
+                    .apartments-rub,
+                    .apartments-area {
                         display: flex;
                         column-gap: 8px;
                     }
@@ -357,10 +386,24 @@ onMounted(() => {
                     }
                 }
 
+                @media (max-width: 960px) {
+                    &-header {
+                        display: flex;
+                        box-shadow: none;
+                        padding-bottom: 6px;
+                    }
+                }
+
                 &__no-results {
                     padding: 20px;
                     text-align: center;
                     color: #999;
+                }
+            }
+
+            @media (max-width: 960px) {
+                .apartments-page__apartment-list {
+                    margin-bottom: 23px;
                 }
             }
 
@@ -384,6 +427,12 @@ onMounted(() => {
                 &:hover:not(:disabled) {
                     background-color: rgba(62, 181, 124, 0.1);
                     border: 1px solid var(--color_ocean-green);
+                }
+            }
+
+            @media (max-width: 960px) {
+                .apartments-page__btn-more {
+                    font-size: 15px;
                 }
             }
         }
@@ -520,6 +569,48 @@ onMounted(() => {
             }
         }
 
+        @media (max-width: 960px) {
+            &-filters {
+                padding: 20px;
+
+                .apartments-page__filter-group {
+                    .apartments-page__rooms-buttons {
+                        column-gap: 15px;
+                    }
+
+                    .apartments-page__rooms-title {
+                        font-size: 13px;
+                        margin-bottom: 6px;
+                    }
+
+                    .apartments-page__filter-item {
+                        margin-bottom: 11px;
+
+                        .apartments-page__from-title {
+                            font-size: 14px;
+                        }
+
+                        .apartments-page__from-item {
+                            font-size: 14px;
+                            margin-right: 51px;
+                        }
+
+                        .apartments-page__to-title {
+                            font-size: 14px;
+                        }
+
+                        .apartments-page__to-item {
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+                .apartments-page__main-reset {
+                    font-size: 13px;
+                }
+            }
+        }
+
         &-top {
             position: fixed;
             right: 32px;
@@ -533,6 +624,19 @@ onMounted(() => {
                 opacity: 0.6;
             }
         }
+    }
+
+    @media (max-width: 960px) {
+        &__main {
+            column-gap: 28px;
+            grid-template-columns: minmax(400px, 506px) minmax(200px, 318px);
+        }
+    }
+}
+
+@media (max-width: 960px) {
+    .apartments-page {
+        padding: 36px 54px;
     }
 }
 
